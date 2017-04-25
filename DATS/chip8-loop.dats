@@ -1,7 +1,7 @@
 (* ****** ****** *)
 //
-// chip8-scr.dats
-// Implementations of functions to manage the virtual screen.
+// chip8-loop.dats
+// Implementation of functions that handle the main emulation loop.
 //
 (* ****** ****** *)
 
@@ -11,4 +11,4 @@
 
 (* ****** ****** *)
 
-(* End of chip8-scr.dats *)
+(* End of chip8-loop.dats *)

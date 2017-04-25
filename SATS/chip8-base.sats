@@ -1,7 +1,7 @@
 (* ****** ****** *)
 //
 // chip8-base.sats
-// Type definitions, basic functions, cast functions, and macros
+// Type definitions, basic functions, cast functions, defines, and macros.
 //
 (* ****** ****** *)
 
@@ -153,6 +153,15 @@ symintr imem
 overload imem with imem_of_word
 overload imem with imem_of_int
 
+// Type to represent info about where to locate the room. Will just be a file
+// name in the case of SDL.
+abstype rom_info_type = ptr
+typedef rom_info = rom_info_type
+
+// Type to represent the data that's loaded from an external location
+absvtype rom_type = ptr
+vtypedef rom = rom_type
+
 (* ****** ****** *)
 
 // CPU Register Types
@@ -230,9 +239,17 @@ exception StackUnderflow of ()
 // Bytes used to store the chip8 font
 #define FONT_SZ 80
 
+// X and Y coordinates of the emulated screen
+typedef scr_x = natLt(SCR_WIDTH)
+typedef scr_y = natLt(SCR_HEIGHT)
+
 // Chip8 screen
 abstype screen_type = ptr
-typedef screen = scree_type
+typedef screen = screen_type
+
+// Display the chip8 screen is drawn to
+abstype display_type = ptr
+typedef display = display_type
 
 (* ****** ****** *)
 
@@ -251,5 +268,15 @@ datatype key_event =
   | key_press of (nkey)
   | key_release of (nkey)
   | key_quit of ()
+
+(* ****** ****** *)
+
+// Opcode Type
+
+(* ****** ****** *)
+
+// An opcode broken into parts
+abstype opcode_type = ptr
+typedef opcode = opcode_type
 
 (* End of [chip8-base.sats] *)

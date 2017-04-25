@@ -1,7 +1,7 @@
 (* ****** ****** *)
 //
 // chip8-sdl.dats
-// Main file to run chip8 with an SDL frontend
+// Main file to run chip8 with an SDL frontend.
 //
 (* ****** ****** *)
 
@@ -11,6 +11,13 @@
 #define CHIP8_MAIN 1
 
 local #include "./chip8-base.dats" in end
+local #include "./chip8-mem.dats" in end
+local #include "./chip8-regs.dats" in end
+local #include "./chip8-time.dats" in end
+local #include "./chip8-stack.dats" in end
+local #include "./chip8-scr.dats" in end
+local #include "./chip8-inp.dats" in end
+local #include "./chip8-loop.dats" in end
 
 (* ****** ****** *)
 

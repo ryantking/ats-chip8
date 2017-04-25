@@ -1,7 +1,7 @@
 (* ****** ****** *)
 //
 // chip8-base.dats
-// Basic functions for bytes and words
+// Implementation of basic functions to work with bytes and words.
 //
 (* ****** ****** *)
 
