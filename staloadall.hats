@@ -11,6 +11,7 @@
 (* ****** ****** *)
 
 staload "./SATS/chip8.sats"
+staload UN = "prelude/SATS/unsafe.sats"
 staload SDL2e = "./SATS/SDL2_extra.sats"
 
 (* end of [staloadall.hats] *)

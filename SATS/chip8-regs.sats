@@ -42,6 +42,7 @@ fun wreg_decr(r: wreg, w: word): void
 overload .get with wreg_get_word
 overload .get with wreg_get_imem
 overload .set with wreg_set
-overload .incr with wreg_
+overload .incr with wreg_incr
+overload .decr with wreg_decr
 
 (* End of [chip8-regs.sats] *)

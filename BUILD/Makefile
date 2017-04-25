@@ -20,7 +20,7 @@ EXEC = chip8
 # Source Files
 DIR = ./..
 SATS = $(DIR)/SATS/chip8.sats
-DATS_SDL = $(DIR)/DATS/chip8-sdl.dats
+DATS_SDL += $(DIR)/DATS/chip8-sdl.dats
 
 # Flags
 FLAGS_SDL = $(shell pkg-config sdl2 --cflags --libs)

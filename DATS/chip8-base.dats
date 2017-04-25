@@ -11,7 +11,7 @@
 
 (* ****** ****** *)
 
-implement word_make_byte_byte(b_hi, b_lo) = (word(b_hi) lsl 8) land word(b_lo)
+implement word_make_byte_byte(b_hi, b_lo) = (b2w(b_hi) lsl 8) land b2w(b_lo)
 
 (* ****** ****** *)
 

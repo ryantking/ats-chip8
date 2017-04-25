@@ -16,6 +16,8 @@ staload "./../mydepies.hats"
 // Types that are stored by chip8
 abst@ype byte = uint8
 abst@ype word = uint16
+abst@ype byte(b:int) = uint8(b)
+abst@ype word(w:int) = uint16(w)
 
 (* ****** ****** *)
 
@@ -31,26 +33,21 @@ macdef w_0x1   = $extval(word, "0x1")
 
 // Cast functions for going between bytes, words, and (u)ints
 castfn byte_of_int(int):<> byte
-castfn byte_of_uint(uint):<> byte
 castfn byte_of_char(char):<> byte
 castfn byte_of_word(word):<> byte
 castfn word_of_int(int):<> word
-castfn word_of_uint(uint):<> word
 castfn word_of_byte(byte):<> word
-castfn uint_of_byte(byte):<> uint
-castfn uint_of_word(word):<> uint
+castfn int_of_byte(byte):<> int
+castfn int_of_word(word):<> int
 
 // Shorthands
-symintr byte word
-overload byte with byte_of_int
-overload byte with byte_of_uint
-overload byte with byte_of_char
-overload byte with byte_of_word
-overload word with word_of_int
-overload word with word_of_uint
-overload word with word_of_byte
-overload uint with uint_of_byte
-overload uint with uint_of_word
+overload i2b with byte_of_int
+overload c2b with byte_of_char
+overload w2b with byte_of_word
+overload i2w with word_of_int
+overload b2w with word_of_byte
+overload b2i with int_of_byte
+overload w2i with int_of_word
 
 (* ****** ****** *)
 
@@ -153,14 +150,14 @@ symintr imem
 overload imem with imem_of_word
 overload imem with imem_of_int
 
-// Type to represent info about where to locate the room. Will just be a file
-// name in the case of SDL.
-abstype rom_info_type = ptr
-typedef rom_info = rom_info_type
+// Expcetions for loading the game
+exception GameNotFound of ()
+exception GameTooLarge of ()
 
-// Type to represent the data that's loaded from an external location
-absvtype rom_type = ptr
-vtypedef rom = rom_type
+// Type to represent info about where to locate the game data. For example,
+// with SDL, it will just be a string representing a game fname.
+abstype game_info_type = ptr
+typedef game_info = game_info_type
 
 (* ****** ****** *)
 
@@ -172,7 +169,7 @@ vtypedef rom = rom_type
 #define NUM_REG 16
 
 // Initial address of the program counter
-#define PC_INIT 0x200
+#define PC_START 0x200
 
 // An 8-bit register
 abstype breg_type = ptr

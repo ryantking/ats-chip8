@@ -13,7 +13,7 @@ staload "./chip8-base.sats"
 fun quit(): void
 
 // One cycle of emulation
-fun game_loop(!display) -> void
+fun game_loop(!display): void
 
 // Functions to get (and set in the case of the registers) the individual parts
 // of the opcode.
