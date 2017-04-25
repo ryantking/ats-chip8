@@ -80,6 +80,55 @@ end
 
 (* ****** ****** *)
 
+implement poll_kb() =
+  let
+    overload = with $SDL2.SDL_EventType_equal
+    var event : $SDL2.SDL_Event?
+    val res = $SDL2.SDL_PollEvent(event)
+    prval () = if res > 0 then opt_unsome(event) else opt_unnone(event)
+    val event = $UN.cast{$SDL2.SDL_Event}(event)
+    val evtp = event.type
+  in
+    if evtp = $SDL2.SDL_QUIT then quit()
+    else if evtp = $SDL2.SDL_KEYUP || evtp = $SDL2.SDL_KEYDOWN then
+      let
+        val key_sym = $SDL2e.GetKeysym(event)
+        val key = (
+          ifcase
+            | key_sym = $SDL2e.SDLK_ESCAPE => 0x10
+            | key_sym = $SDL2e.SDLK_1 => 0x1
+            | key_sym = $SDL2e.SDLK_2 => 0x2
+            | key_sym = $SDL2e.SDLK_3 => 0x3
+            | key_sym = $SDL2e.SDLK_4 => 0xF
+            | key_sym = $SDL2e.SDLK_q => 0x4
+            | key_sym = $SDL2e.SDLK_w => 0x5
+            | key_sym = $SDL2e.SDLK_e => 0x6
+            | key_sym = $SDL2e.SDLK_r => 0xE
+            | key_sym = $SDL2e.SDLK_a => 0x7
+            | key_sym = $SDL2e.SDLK_s => 0x8
+            | key_sym = $SDL2e.SDLK_d => 0x9
+            | key_sym = $SDL2e.SDLK_f => 0xD
+            | key_sym = $SDL2e.SDLK_z => 0xA
+            | key_sym = $SDL2e.SDLK_x => 0x0
+            | key_sym = $SDL2e.SDLK_c => 0xB
+            | key_sym = $SDL2e.SDLK_v => 0xC
+            | _                => ~1
+          ) : int
+      in
+        if key = ~1 then ()
+        else if key = 0x10 then quit()
+        else
+          let
+              val key = $UN.cast{nkey}(key)
+          in
+            if evtp = $SDL2.SDL_KEYUP then release_key(key)
+            else press_key(key)
+          end
+    end
+end
+
+(* ****** ****** *)
+
 local
   assume game_info_type = string
 in

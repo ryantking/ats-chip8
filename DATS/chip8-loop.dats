@@ -11,4 +11,10 @@
 
 (* ****** ****** *)
 
+local
+  val interrupted = ref<bool>(false)
+in
+  implement quit() = !interrupted := true
+end
+
 (* End of chip8-loop.dats *)
