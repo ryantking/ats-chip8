@@ -16,8 +16,8 @@ staload STDLIB = "libats/libc/SATS/stdlib.sats"
 local
   assume opcode_type = '{
     p = byte,
-    Vx = breg,
-    Vy = breg,
+    x = word,
+    y = word,
     n = byte,
     kk = byte,
     nnn = word
@@ -35,8 +35,8 @@ local
 
   fun decode(opc: word): opcode = '{
     p = w2b((opc lsr 0xC) land w_0xF),
-    Vx = V((opc lsr 0x8) land w_0xF),
-    Vy = V((opc lsr 0x4) land w_0xF),
+    x = (opc lsr 0x8) land w_0xF,
+    y = (opc lsr 0x4) land w_0xF,
     n = w2b(opc land w_0xF),
     kk = w2b(opc land w_0xFF),
     nnn = opc land w_0xFFF
@@ -48,10 +48,10 @@ local
       fun check_pn(p: byte, n: byte): bool = opc.p = p && opc.n = n
       fun check_pkk(p: byte, kk: byte): bool = opc.p = p && opc.kk = kk
       fun check_pnnn(p: byte, nnn: word): bool = opc.p = p && opc.nnn = nnn
-      fun get_Vx(): byte = (opc.Vx).get()
-      fun set_Vx(b: byte): void = (opc.Vx).set(b)
-      fun get_Vy(): byte = (opc.Vy).get()
-      fun set_Vy(b: byte): void = (opc.Vy).set(b)
+      fun get_Vx(): byte = (V(opc.x)).get()
+      fun set_Vx(b: byte): void = (V(opc.x)).set(b)
+      fun get_Vy(): byte = (V(opc.y)).get()
+      fun set_Vy(b: byte): void = (V(opc.y)).set(b)
       fun set_Vf(test: bool): void =
         if test then (V(w_0xF)).set(b_0x1) else (V(w_0xF)).set(b_0x0)
 
@@ -85,10 +85,10 @@ local
       | check_p(b_0xB) => PC.set(b2w((V(w_0x0)).get()) + opc.nnn)
       | check_p(b_0xC) => Vx(i2b($STDLIB.rand() % 256) land opc.kk)
       | check_p(b_0xD) => draw_y(0) where {
-        val () = (V(0xF)).set(b_0x0)
-        val x = b2i(Vx.get())
-        val y = b2i(Vy.get())
-        val height = w2i(n)
+        val () = (V(w_0xF)).set(b_0x0)
+        val x = b2i(Vx())
+        val y = b2i(Vy())
+        val height = b2i(opc.n)
 
         fun draw_x(row: byte, x_off: int, y_off: int):<cloref1> void =
           if x_off < SPR_WIDTH && x + x_off < SCR_WIDTH then
@@ -98,7 +98,7 @@ local
               val pix = (row lsr (SPR_WIDTH - 1 - x_off)) land b_0x1
               val () = if pix = b_0x1 then (
                 if Scr(_x, _y) = b_0x1 then (
-                  (V(0xF)).set(b_0x1);
+                  (V(w_0xF)).set(b_0x1);
                   Scr(_x, _y, b_0x0)
                 ) else Scr(_x, _y, b_0x1)
               )
@@ -108,21 +108,53 @@ local
 
         fun draw_y(y_off: int):<cloref1> void = (
           if y_off < height && y + y_off < SCR_HEIGHT then (
-            draw_x(Mem($UN.cast{imem}(I.get() + y_off)), 0, y_off);
+            draw_x(Mem($UN.cast{imem}(w2i(I.get()) + y_off)), 0, y_off);
             draw_y(succ(y_off))
           )
         )
       }
-
+      | check_pkk(b_0xE, i2b(0x9E)) =>
+        if check_key($UN.cast{nkey}(Vx())) then PC.incr(w_0x2)
+      | check_pkk(b_0xE, i2b(0xA1)) =>
+        if not(check_key($UN.cast{nkey}(Vx()))) then PC.incr(w_0x2)
+      | check_pkk(b_0xF, b_0x7) => Vx(DT.get())
+      | check_pkk(b_0xF, b_0xA) => wait_for_key(opc.x)
+      | check_pkk(b_0xF, i2b(0x15)) => DT.set(Vx())
+      | check_pkk(b_0xF, i2b(0x18)) => ST.set(Vx())
+      | check_pkk(b_0xF, i2b(0x1E)) => (
+          Vf(w2i(I.get()) + b2i(Vx()) > 0xFFF);
+          I.set(I.get() + b2w(Vx()))
+        )
+      | check_pkk(b_0xF, i2b(0x29)) => I.set(b2w(Vx() * b_0x5))
+      | check_pkk(b_0xF, i2b(0x33)) => (
+          Mem(w2imem(I.get()), Vx() / i2b(100) % i2b(10));
+          Mem(w2imem(I.get()), Vx() / i2b(10) % i2b(10));
+          Mem(w2imem(I.get()), Vx() % i2b(10))
+        )
+      | check_pkk(b_0xF, i2b(0x55)) => store(w_0x0, opc.x) where {
+          fun store(i: word, n: word): void = (
+            Mem(w2imem(I.get() + i), (V(i)).get());
+            if (succ(w2i(i)) < NUM_REGS) && (i < n) then store(i + w_0x1, n)
+          )
+        }
+      | check_pkk(b_0xF, i2b(0x65)) => fill(w_0x0, opc.x) where {
+          fun fill(i: word, n: word): void = (
+            (V(i)).set(Mem(w2imem(I.get() + i)));
+            if succ(w2i(i)) < NUM_REGS then if i < n then fill(i + w_0x1, n)
+          )
+        }
       | _ => $raise UnknownOpcode((b2w(opc.p) lsl 0xC) lor opc.nnn)
     end
 
 
   fun exec_insns(): void =
-    if has_time() then execute(opc) where {
-      val opc = fetch()
-      val opc = decode(opc)
-    }
+    if has_time() && not(waiting_for_key()) then
+      let
+        val opc = fetch()
+        val opc = decode(opc)
+      in
+        (execute(opc); exec_insns())
+      end
 
 in
   implement quit() = !interrupted := true

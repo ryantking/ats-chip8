@@ -91,6 +91,16 @@ int chip8_eq_word_word(word w1, word w2) {
 }
 
 ATSinline()
+int chip8_gt_word_word(word w1, word w2) {
+  return w1 > w2;
+}
+
+ATSinline()
+int chip8_lt_word_word(word w1, word w2) {
+  return w1 < w2;
+}
+
+ATSinline()
 word chip8_add_word_word(word w1, word w2) {
   return w1 + w2;
 }

@@ -159,6 +159,7 @@ implement main0(argc, argv) = () where {
       else fprintln!(stderr_ref, "chip8: Unknown arguments");
       exit(1)
   )
+
   val () = assertloc(argc = 2)
   val () = load_font()
   val () = load_game(argv[1])

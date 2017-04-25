@@ -16,8 +16,6 @@ staload "./../mydepies.hats"
 // Types that are stored by chip8
 abst@ype byte = uint8
 abst@ype word = uint16
-abst@ype byte(b:int) = uint8(b)
-abst@ype word(w:int) = uint16(w)
 
 (* ****** ****** *)
 
@@ -87,6 +85,8 @@ fun lsl_byte(byte, int): byte = "mac#%"
 fun lsr_byte(byte, int): byte = "mac#%"
 
 fun eq_word_word(word, word): bool = "mac#%"
+fun gt_word_word(word, word): bool = "mac#%"
+fun lt_word_word(word, word): bool = "mac#%"
 fun add_word_word(word, word): word = "mac#%"
 fun sub_word_word(word, word): word = "mac#%"
 fun land_word_word(word, word): word = "mac#%"
@@ -111,6 +111,8 @@ overload lsl with lsl_byte
 overload lsr with lsr_byte
 
 overload = with eq_word_word
+overload > with lt_word_word
+overload < with lt_word_word
 overload + with add_word_word
 overload - with sub_word_word
 overload land with land_word_word
@@ -248,7 +250,7 @@ exception StackUnderflow of ()
 #define SPR_WIDTH 8
 
 // Number of instructions to be performed per frame
-#define INSNS_PER_FRAME 14
+#define INSNS_PER_FRAME 5000
 
 // X and Y coordinates of the emulated screen
 typedef scr_x = natLt(SCR_WIDTH)
