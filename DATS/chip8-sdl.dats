@@ -1,0 +1,1 @@
+implement main0(argc, argv) = println!("Hello from chip8!")

@@ -11,4 +11,8 @@
 
 # End of https://www.gitignore.io/api/ats
 
+# Dependencies installed with NPM
+node_modules
+
+# Compiled Emulator
 BUILD/chip8
