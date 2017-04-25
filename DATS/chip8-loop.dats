@@ -9,7 +9,7 @@
 #include "./../staloadall.hats"
 #endif
 
-(* ****** ****** *)
+staload STDLIB = "libats/libc/SATS/stdlib.sats"
 
 (* ****** ****** *)
 
@@ -80,6 +80,10 @@ local
       | check_pn(b_0x8, b_0x6) => (Vf((Vx() land b_0x1) = b_0x1); Vx(Vx() lsr 1))
       | check_pn(b_0x8, b_0x7) => (Vf(Vy() > Vx()); Vx(Vy() - Vx()))
       | check_pn(b_0x8, b_0xE) => (Vf((Vx() lsr 7) = b_0x1); Vx(Vx() lsl 1))
+      | check_pn(b_0x9, b_0x0) => if (Vx() != Vy()) then PC.incr(w_0x2)
+      | check_p(b_0xA) => I.set(opc.nnn)
+      | check_p(b_0xB) => PC.set(b2w((V(0)).get()) + opc.nnn)
+      | check_p(b_0xC) => Vx(i2b($STDLIB.rand() % 256) land opc.kk)
       | _ => $raise UnknownOpcode((b2w(opc.p) lsl 0xC) lor opc.nnn)
     end
 
