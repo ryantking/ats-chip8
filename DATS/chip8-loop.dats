@@ -82,8 +82,38 @@ local
       | check_pn(b_0x8, b_0xE) => (Vf((Vx() lsr 7) = b_0x1); Vx(Vx() lsl 1))
       | check_pn(b_0x9, b_0x0) => if (Vx() != Vy()) then PC.incr(w_0x2)
       | check_p(b_0xA) => I.set(opc.nnn)
-      | check_p(b_0xB) => PC.set(b2w((V(0)).get()) + opc.nnn)
+      | check_p(b_0xB) => PC.set(b2w((V(w_0x0)).get()) + opc.nnn)
       | check_p(b_0xC) => Vx(i2b($STDLIB.rand() % 256) land opc.kk)
+      | check_p(b_0xD) => draw_y(0) where {
+        val () = (V(0xF)).set(b_0x0)
+        val x = b2i(Vx.get())
+        val y = b2i(Vy.get())
+        val height = w2i(n)
+
+        fun draw_x(row: byte, x_off: int, y_off: int):<cloref1> void =
+          if x_off < SPR_WIDTH && x + x_off < SCR_WIDTH then
+            let
+              val _x = $UN.cast{natLt(SCR_WIDTH)}(x + x_off)
+              val _y = $UN.cast{natLt(SCR_HEIGHT)}(y + y_off)
+              val pix = (row lsr (SPR_WIDTH - 1 - x_off)) land b_0x1
+              val () = if pix = b_0x1 then (
+                if Scr(_x, _y) = b_0x1 then (
+                  (V(0xF)).set(b_0x1);
+                  Scr(_x, _y, b_0x0)
+                ) else Scr(_x, _y, b_0x1)
+              )
+            in
+              draw_x(row, succ(x_off), y_off)
+            end
+
+        fun draw_y(y_off: int):<cloref1> void = (
+          if y_off < height && y + y_off < SCR_HEIGHT then (
+            draw_x(Mem($UN.cast{imem}(I.get() + y_off)), 0, y_off);
+            draw_y(succ(y_off))
+          )
+        )
+      }
+
       | _ => $raise UnknownOpcode((b2w(opc.p) lsl 0xC) lor opc.nnn)
     end
 
