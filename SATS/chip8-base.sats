@@ -13,9 +13,17 @@ staload "./../mydepies.hats"
 
 (* ****** ****** *)
 
+sortdef byte = {i:nat | i < 0x100}
+sortdef word = {i:nat | i < 0x10000}
+
 // Types that are stored by chip8
 abst@ype byte = uint8
+abst@ype Byte(i:int) = uint8(i)
+typedef byteLt(ub:int) = [b: byte | b < ub] Byte(b)
+
 abst@ype word = uint16
+abst@ype Word(i:int) = uint16(i)
+typedef wordLt(ub:int) = [w: word | w < ub] Word(w)
 
 (* ****** ****** *)
 
@@ -38,8 +46,12 @@ macdef b_0xE = $extval(byte, "0xE")
 macdef b_0xF = $extval(byte, "0xF")
 macdef b_0xFF = $extval(byte, "0xFF")
 
+macdef bb_0x0 = $extval(Byte(0), "0x0")
+macdef bb_0x1 = $extval(Byte(1), "0x1")
+
 // Commonly used word values
 macdef w_0x0   = $extval(word, "0x0")
+macdef W_0x0   = $extval(Word(0), "0x0")
 macdef w_0x1   = $extval(word, "0x1")
 macdef w_0x2   = $extval(word, "0x2")
 macdef w_0xF   = $extval(word, "0xF")
@@ -68,74 +80,6 @@ overload w2i with int_of_word
 
 (* ****** ****** *)
 
-// Basic comparison, arithmetic, and logical operations with bytes and words
-fun eq_byte_byte(byte, byte): bool = "mac#%"
-fun neq_byte_byte(byte, byte): bool = "mac#%"
-fun gt_byte_byte(byte, byte): bool = "mac#%"
-fun lt_byte_byte(byte, byte): bool = "mac#%"
-fun add_byte_byte(byte, byte): byte = "mac#%"
-fun sub_byte_byte(byte, byte): byte = "mac#%"
-fun mult_byte_byte(byte, byte): byte = "mac#%"
-fun div_byte_byte(byte, byte): byte = "mac#%"
-fun mod_byte_byte(byte, byte): byte = "mac#%"
-fun land_byte_byte(byte, byte): byte = "mac#%"
-fun lor_byte_byte(byte, byte): byte = "mac#%"
-fun lxor_byte_byte(byte, byte): byte = "mac#%"
-fun lsl_byte(byte, int): byte = "mac#%"
-fun lsr_byte(byte, int): byte = "mac#%"
-
-fun eq_word_word(word, word): bool = "mac#%"
-fun gt_word_word(word, word): bool = "mac#%"
-fun lt_word_word(word, word): bool = "mac#%"
-fun add_word_word(word, word): word = "mac#%"
-fun sub_word_word(word, word): word = "mac#%"
-fun land_word_word(word, word): word = "mac#%"
-fun lor_word_word(word, word): word = "mac#%"
-fun lsl_word(word, int): word = "mac#%"
-fun lsr_word(word, int): word = "mac#%"
-
-// Allow the normal symbols to be used with bytes and words
-overload = with eq_byte_byte
-overload != with neq_byte_byte
-overload > with gt_byte_byte
-overload < with lt_byte_byte
-overload + with add_byte_byte
-overload - with sub_byte_byte
-overload * with mult_byte_byte
-overload / with div_byte_byte
-overload % with mod_byte_byte
-overload land with land_byte_byte
-overload lor with lor_byte_byte
-overload lxor with lxor_byte_byte
-overload lsl with lsl_byte
-overload lsr with lsr_byte
-
-overload = with eq_word_word
-overload > with lt_word_word
-overload < with lt_word_word
-overload + with add_word_word
-overload - with sub_word_word
-overload land with land_word_word
-overload lor with lor_word_word
-overload lsl with lsl_word
-overload lsr with lsr_word
-
-(* ***** ****** *)
-
-// Print functions for bytes and words
-fun print_byte : print_type(byte)
-fun print_word : print_type(word)
-fun fprint_byte : fprint_type(byte)
-fun fprint_word : fprint_type(word)
-
-// Allow bytes and words to be printed normally
-overload print with print_byte
-overload print with print_word
-overload fprint with fprint_byte
-overload fprint with fprint_word
-
-(* ****** ****** *)
-
 // Memory Types
 
 (* ****** ****** *)
@@ -148,7 +92,7 @@ abstype memory_type = ptr
 typedef memory = memory_type
 
 // Index to chip8 memory
-typedef imem = natLt(MEM_SIZE)
+typedef imem = wordLt(MEM_SIZE)
 
 // Segmentation fault for invalid memory access
 exception SegFault of (int)

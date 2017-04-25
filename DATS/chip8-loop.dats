@@ -90,7 +90,7 @@ local
         val y = b2i(Vy())
         val height = b2i(opc.n)
 
-        fun draw_x(row: byte, x_off: int, y_off: int):<cloref1> void =
+        fun draw_x(row: byte, x_off: natLt(SPR_WIDTH), y_off: int):<cloref1> void =
           if x_off < SPR_WIDTH && x + x_off < SCR_WIDTH then
             let
               val _x = $UN.cast{natLt(SCR_WIDTH)}(x + x_off)
@@ -103,7 +103,7 @@ local
                 ) else Scr(_x, _y, b_0x1)
               )
             in
-              draw_x(row, succ(x_off), y_off)
+              if succ(x_off) < SPR_WIDTH then draw_x(row, succ(x_off), y_off)
             end
 
         fun draw_y(y_off: int):<cloref1> void = (

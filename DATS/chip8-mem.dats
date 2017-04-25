@@ -14,9 +14,12 @@
 local
   val mem_sz = i2sz(MEM_SIZE)
   val memory = arrayref_make_elt<byte>(mem_sz, b_0x0)
+
+  extern castfn index_of_imem(imem):<> natLt(MEM_SIZE)
+  overload imem2index with index_of_imem
 in
-  implement memory_get_at(i) = memory[i]
-  implement memory_set_at(i, b) = memory[i] := b
+  implement memory_get_at(i) = memory[imem2index(i)]
+  implement memory_set_at(i, b) = memory[imem2index(i)] := b
 end
 
 (* ****** ****** *)

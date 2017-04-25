@@ -13,6 +13,8 @@
 (* ****** ****** *)
 
 #include "./chip8-base.sats"
+#include "./chip8-byte.sats"
+#include "./chip8-word.sats"
 #include "./chip8-mem.sats"
 #include "./chip8-regs.sats"
 #include "./chip8-time.sats"
