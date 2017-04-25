@@ -10,6 +10,7 @@
 
 (* ****** ****** *)
 
+staload "./SATS/chip8.sats"
 staload SDL2e = "./SATS/SDL2_extra.sats"
 
 (* end of [staloadall.hats] *)

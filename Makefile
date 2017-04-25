@@ -16,7 +16,6 @@ MAKE = make
 all:: build
 build:: ; $(MAKE) -C BUILD -f Makefile
 
-
 # Install NPM Dependencies
 npm-install:: ; $(NPM) install atscntrb-libsdl2
 

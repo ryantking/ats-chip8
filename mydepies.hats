@@ -5,7 +5,7 @@
 //
 (* ****** ****** *)
 
-#define SDL2_targetloc "$PATSHOMELOCS/atscntrb-libsdl2"
+#define LIBSDL2_targetloc "$PATSHOMELOCS/atscntrb-libsdl2"
 
 (* ****** ****** *)
 
