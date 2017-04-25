@@ -38,10 +38,12 @@ macdef b_0xC = $extval(byte, "0xC")
 macdef b_0xD = $extval(byte, "0xD")
 macdef b_0xE = $extval(byte, "0xE")
 macdef b_0xF = $extval(byte, "0xF")
+macdef b_0xFF = $extval(byte, "0xFF")
 
 // Commonly used word values
 macdef w_0x0   = $extval(word, "0x0")
 macdef w_0x1   = $extval(word, "0x1")
+macdef w_0x2   = $extval(word, "0x2")
 macdef w_0xF   = $extval(word, "0xF")
 macdef w_0xFF  = $extval(word, "0xFF")
 macdef w_0xFFF = $extval(word, "0xFFF")
@@ -185,15 +187,7 @@ abstype breg_type = ptr
 typedef breg = breg_type
 
 // Expcetion for accessing an invalid register
-exception InvalidRegister of (byte)
-
-// A register number (0 through 15)
-typedef nreg = natLt(NUM_REGS)
-
-// Turns a byte into a reg number
-fun nreg_of_byte(byte): nreg
-
-overload b2nreg with nreg_of_byte
+exception InvalidRegister of (int)
 
 (* ****** ****** *)
 
@@ -292,12 +286,14 @@ datatype key_event =
 
 (* ****** ****** *)
 
-// Each opcode has a unique combination of the first 4 bits and the last
-// 0-3 4-bit sections with all non-identify 4-bit sections containing additional
-// data for the instruction.
-datatype opcode =
-  | PNNN of (byte, word)
-  | PXKK of (byte, breg byte)
-  | PXYK of (byte, breg, breg, byte)
+// Number of instructions to execute each frame
+#define INSNS_PER_FRAME 14
+
+// Expcetion to report an opcode not implemented
+exception UnknownOpcode of (word)
+
+// An abstraction of an opcode
+abstype opcode_type = ptr
+typedef opcode = opcode_type
 
 (* End of [chip8-base.sats] *)

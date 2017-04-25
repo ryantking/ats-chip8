@@ -10,7 +10,7 @@ staload "./chip8-base.sats"
 (* ****** ****** *)
 
 // Return a specific byte register for use
-fun V(I: nreg): breg
+fun V(word): breg
 
 // Byte register getter and setter functions
 fun breg_get(r: breg): byte

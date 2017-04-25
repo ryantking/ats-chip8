@@ -11,14 +11,6 @@
 
 (* ****** ****** *)
 
-implement nreg_of_byte(b) =
-  let val n = b2i(b) in
-    if n < NUM_REGS then $UN.cast{nreg}(n)
-    else $raise InvalidRegister(b)
-  end
-
-(* ****** ****** *)
-
 local
   assume breg_type = ref(byte)
   assume wreg_type = ref(word)
@@ -46,7 +38,10 @@ local
       br := ref2breg(ref<byte>(b_0x0))
   }
 in
-  implement V(i) = bregs[i]
+  implement V(w) =
+    if w2i(w) >= NUM_REGS then $raise InvalidRegister(w2i(w))
+    else bregs[$UN.cast{natLt(NUM_REGS)}(w)]
+
   implement PC = ref2wreg(ref<word>(w_0x0))
   implement I = ref2wreg(ref<word>(w_0x0))
 end

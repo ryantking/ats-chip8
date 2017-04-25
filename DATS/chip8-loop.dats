@@ -14,58 +14,90 @@
 (* ****** ****** *)
 
 local
-  val interrupted = ref<bool>(false)
-  val Vx = ref<breg>(V(0))
-  val Vy = ref<breg>(V(0))
-  val nnn = ref<word>(w_0x0)
-  val kk = ref<byte>(b_0x0)
-  val n = ref<byte>(b_0x0)
+  assume opcode_type = '{
+    p = byte,
+    Vx = breg,
+    Vy = breg,
+    n = byte,
+    kk = byte,
+    nnn = word
+  }
 
-  fun fetch(): word = o where {
+  val interrupted = ref<bool>(false)
+
+  fun fetch(): word = opc where {
     val b_hi = Mem(w2imem(PC.get()))
     val () = PC.incr(w_0x1)
     val b_lo = Mem(w2imem(PC.get()))
     val () = PC.incr(w_0x1)
-    val o = (b2w(b_hi) lsl 0x8) lor b2w(b_lo)
+    val opc = (b2w(b_hi) lsl 0x8) lor b2w(b_lo)
   }
 
-  fun decode(o: word): byte = '{
-    p = w2b(o lsr 0xc),
-    Vx = V(b2nreg(w2b(o lsr 0x8) land i2b(0xF))),
-    Vy = V(b2nreg(w2b(o lsr 0x4) land i2b(0xF))),
-    nnn = o land i2w(0xFFF),
-    kk = w2b(o land i2w(0xFF)),
-    n = w2b(o land i2w(0xF))
+  fun decode(opc: word): opcode = '{
+    p = w2b((opc lsr 0xC) land w_0xF),
+    Vx = V((opc lsr 0x8) land w_0xF),
+    Vy = V((opc lsr 0x4) land w_0xF),
+    n = w2b(opc land w_0xF),
+    kk = w2b(opc land w_0xFF),
+    nnn = opc land w_0xFFF
   }
 
-  // Functions to get (and set in the case of the registers) the individual parts
-  // of the opcode.
-  fun opcode_get_first(opcode): byte
-  fun opcode_get_Vx(opcode): breg
-  fun opcode_set_Vx(opcode, byte): void
-  fun opcode_get_Vy(opcode): breg
-  fun opcode_set_Vy(opcode, byte): void
-  fun opcode_get_last3(opcode): word
-  fun opcode_get_last2(opcode): byte
-  fun opcode_get_last1(opcode): byte
+  fun execute(opc: opcode): void =
+    let
+      fun check_p(p: byte): bool = opc.p = p
+      fun check_pn(p: byte, n: byte): bool = opc.p = p && opc.n = n
+      fun check_pkk(p: byte, kk: byte): bool = opc.p = p && opc.kk = kk
+      fun check_pnnn(p: byte, nnn: word): bool = opc.p = p && opc.nnn = nnn
+      fun get_Vx(): byte = (opc.Vx).get()
+      fun set_Vx(b: byte): void = (opc.Vx).set(b)
+      fun get_Vy(): byte = (opc.Vy).get()
+      fun set_Vy(b: byte): void = (opc.Vy).set(b)
+      fun set_Vf(test: bool): void =
+        if test then (V(w_0xF)).set(b_0x1) else (V(w_0xF)).set(b_0x0)
 
-// Shorthands
-overload first with opcode_get_first
-overload Vx with opcode_get_Vx
-overload Vx with opcode_set_Vx
-overload Vy with opcode_get_Vy
-overload Vy with opcode_set_Vy
-overload last3 with opcode_get_last3
-overload last2 with opcode_get_last2
-overload last1 with opcode_get_last1
+      overload Vx with get_Vx
+      overload Vx with set_Vx
+      overload Vy with get_Vy
+      overload Vy with set_Vy
+      overload Vf with set_Vf
+    in
+      ifcase
+      | check_pkk(b_0x0, i2b(0xE0)) => clear_screen()
+      | check_pkk(b_0x0, i2b(0xEE)) => PC.set(stack_pop())
+      | check_p(b_0x1) => PC.set(opc.nnn)
+      | check_p(b_0x2) => (stack_push(PC.get()); PC.set(opc.nnn))
+      | check_p(b_0x3) => if (Vx() = opc.kk) then PC.incr(w_0x2)
+      | check_p(b_0x4) => if (Vx() != opc.kk) then PC.incr(w_0x2)
+      | check_p(b_0x5) => if (Vx() = Vy()) then PC.incr(w_0x2)
+      | check_p(b_0x6) => Vx(opc.kk)
+      | check_p(b_0x7) => Vx(Vx() + opc.kk)
+      | check_pn(b_0x8, b_0x0) => Vx(Vy())
+      | check_pn(b_0x8, b_0x1) => Vx(Vx() lor Vy())
+      | check_pn(b_0x8, b_0x2) => Vx(Vx() land Vy())
+      | check_pn(b_0x8, b_0x3) => Vx(Vx() lxor Vy())
+      | check_pn(b_0x8, b_0x4) => (Vf(Vx() > (b_0xFF - Vy())); Vx(Vx() + Vy()))
+      | check_pn(b_0x8, b_0x5) => (Vf(Vx() > Vy()); Vx(Vx() - Vy()))
+      | check_pn(b_0x8, b_0x6) => (Vf((Vx() land b_0x1) = b_0x1); Vx(Vx() lsr 1))
+      | check_pn(b_0x8, b_0x7) => (Vf(Vy() > Vx()); Vx(Vy() - Vx()))
+      | check_pn(b_0x8, b_0xE) => (Vf((Vx() lsr 7) = b_0x1); Vx(Vx() lsl 1))
+      | _ => $raise UnknownOpcode((b2w(opc.p) lsl 0xC) lor opc.nnn)
+    end
+
+
+  fun exec_insns(): void =
+    if has_time() then execute(opc) where {
+      val opc = fetch()
+      val opc = decode(opc)
+    }
+
 in
   implement quit() = !interrupted := true
 
   implement game_loop(dpy) =
     let
-      val o = fetch()
-      val o = decode(o)
+      val () = exec_insns()
       val () = poll_kb()
+      val () = if sync_clock() then update_display(dpy)
     in
       if not !interrupted then game_loop(dpy)
     end

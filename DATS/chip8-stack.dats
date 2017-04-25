@@ -18,7 +18,7 @@ local
 in
   implement stack_pop() =
     let val i = !stk_ptr in
-      if i > 0 then (!stk_ptr := i-1; w2imem(stk[i-1]))
+      if i > 0 then (!stk_ptr := i-1; stk[i-1])
       else $raise StackUnderflow()
     end
 
