@@ -4,7 +4,7 @@
 ######
 
 # ATS Compiler
-PATSCC = ${PATSHOME}/bin/patscc
+PATSCC = ${PATSHOME}/bin/patscc -w
 PATSOPT = ${PATSHOME}/bin/pastopt
 
 # File Removal Command

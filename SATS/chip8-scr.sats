@@ -9,6 +9,9 @@ staload "./chip8-base.sats"
 
 (* ****** ****** *)
 
+// Clears the screen
+fun clear_screen(): void
+
 // Getter and setter functions for the screen. The screen is a matrix of bytes,
 // either 0 or 1 for black or white respectively. The screen is set via xorring.
 fun screen_get_at(scr_x, scr_y): byte

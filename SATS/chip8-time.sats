@@ -9,6 +9,13 @@ staload "./chip8-base.sats"
 
 (* ****** ****** *)
 
+// The current time in seconds (with milliseconds)
+fun get_time(): time_t
+
+// Functions to init the clock, decrease the timers, and manage speed
+fun init_clock(): void
+fun sync_clock(): void
+
 // The delay timer and sound timer
 val DT: timer
 val ST: timer
@@ -18,11 +25,12 @@ val ST: timer
 // timer is zero before decrementing it.
 fun timer_get(timer): byte
 fun timer_set(timer, byte): void
-fun timer_tick(timer, byte): void
+fun timer_decr(timer, byte): void
+
 
 // Shorthands
 overload .get with timer_get
 overload .set with timer_set
-overload .tick with timer_tick
+overload .decr with timer_decr
 
 (* End of [chip8-time.sats] *)

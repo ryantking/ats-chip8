@@ -99,15 +99,6 @@ overload lsr with lsr_word
 
 (* ***** ****** *)
 
-// Turn two bytes into a word
-fun word_make_byte_byte(byte(*high*), byte(*low*)): word
-
-// Shorthand
-symintr to_word
-overload to_word with word_make_byte_byte
-
-(* ****** ****** *)
-
 // Print functions for bytes and words
 fun print_byte : print_type(byte)
 fun print_word : print_type(word)
@@ -146,9 +137,8 @@ fun imem_of_word(word): imem
 fun imem_of_int(int): imem
 
 // Allow simple casting to memory indicies
-symintr imem
-overload imem with imem_of_word
-overload imem with imem_of_int
+overload w2imem with imem_of_word
+overload i2imem with imem_of_int
 
 // Expcetions for loading the game
 exception GameNotFound of ()
@@ -166,7 +156,7 @@ typedef game_info = game_info_type
 (* ****** ****** *)
 
 // Number of 8-bit registers
-#define NUM_REG 16
+#define NUM_REGS 16
 
 // Initial address of the program counter
 #define PC_START 0x200
@@ -179,7 +169,7 @@ typedef breg = breg_type
 exception InvalidRegister of (byte)
 
 // A register number (0 through 15)
-typedef nreg = natLt(16)
+typedef nreg = natLt(NUM_REGS)
 
 (* ****** ****** *)
 
@@ -193,6 +183,9 @@ typedef wreg = wreg_type
 
 (* ****** ****** *)
 
+// Chip8 timer frequency and clock
+#define FREQ 60
+
 // Unix enoch time in seconds (with precission)
 typedef time_t = double
 
@@ -205,6 +198,12 @@ typedef timer = timer_type
 // Stack Types
 
 (* ****** ****** *)
+
+// Size of the stack in words
+#define STACK_SIZE 16
+
+// Stack index (its stored as an array)
+typedef istk = natLte(STACK_SIZE)
 
 // The chip8's stack
 abstype stack_type = ptr
@@ -233,9 +232,6 @@ exception StackUnderflow of ()
 // Number of instructions to be performed per frame
 #define INSNS_PER_FRAME 14
 
-// Bytes used to store the chip8 font
-#define FONT_SZ 80
-
 // X and Y coordinates of the emulated screen
 typedef scr_x = natLt(SCR_WIDTH)
 typedef scr_y = natLt(SCR_HEIGHT)
@@ -245,8 +241,8 @@ abstype screen_type = ptr
 typedef screen = screen_type
 
 // Display the chip8 screen is drawn to
-abstype display_type = ptr
-typedef display = display_type
+absvtype display_type = ptr
+vtypedef display = display_type
 
 (* ****** ****** *)
 
