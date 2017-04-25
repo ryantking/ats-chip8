@@ -19,7 +19,6 @@
 #include "./chip8-stack.sats"
 #include "./chip8-scr.sats"
 #include "./chip8-inp.sats"
-#include "./chip8-loop.sats"
 
 // Loads the game from an external memory location
 fun load_game(game_info): void
@@ -38,5 +37,17 @@ macdef chip8_font = $extval(arrayref(byte, FONT_SZ), "chip8_font")
 
 // Loads the font into memory
 fun load_font(): void
+
+(* ****** ****** *)
+
+// Main Loop
+
+(* ****** ****** *)
+
+// Ends the main loop
+fun quit(): void
+
+// One cycle of emulation
+fun game_loop(!display): void
 
 (* End of [chip8.sats] *)

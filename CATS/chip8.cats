@@ -106,6 +106,11 @@ word chip8_land_word_word(word w1, word w2) {
 }
 
 ATSinline()
+word chip8_lor_word_word(word w1, word w2) {
+  return w1 | w2;
+}
+
+ATSinline()
 word chip8_lsl_word(word w, int i) {
   return w << i;
 }

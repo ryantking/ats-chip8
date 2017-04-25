@@ -165,11 +165,8 @@ implement main0(argc, argv) = () where {
   val () = PC.set(i2w(PC_START))
   val () = init_clock()
   val dpy = init_display()
-  val () = $SDL2.SDL_Delay(1000)
+  val () = game_loop(dpy)
   val () = close_display(dpy)
-  val () = println!("Mem(0x0) = ", Mem(0x0))
-  val () = println!("Mem(0x200) = ", Mem(0x200))
-  val () = println!("Hell from chip8!")
 }
 
 (* End of [chip8-sdl.dats] *)

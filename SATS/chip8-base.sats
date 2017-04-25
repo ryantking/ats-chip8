@@ -24,10 +24,27 @@ abst@ype word(w:int) = uint16(w)
 // Commonly used byte values
 macdef b_0x0 = $extval(byte, "0x0")
 macdef b_0x1 = $extval(byte, "0x1")
+macdef b_0x2 = $extval(byte, "0x2")
+macdef b_0x3 = $extval(byte, "0x3")
+macdef b_0x4 = $extval(byte, "0x4")
+macdef b_0x5 = $extval(byte, "0x5")
+macdef b_0x6 = $extval(byte, "0x6")
+macdef b_0x7 = $extval(byte, "0x7")
+macdef b_0x8 = $extval(byte, "0x8")
+macdef b_0x9 = $extval(byte, "0x9")
+macdef b_0xA = $extval(byte, "0xA")
+macdef b_0xB = $extval(byte, "0xB")
+macdef b_0xC = $extval(byte, "0xC")
+macdef b_0xD = $extval(byte, "0xD")
+macdef b_0xE = $extval(byte, "0xE")
+macdef b_0xF = $extval(byte, "0xF")
 
 // Commonly used word values
 macdef w_0x0   = $extval(word, "0x0")
 macdef w_0x1   = $extval(word, "0x1")
+macdef w_0xF   = $extval(word, "0xF")
+macdef w_0xFF  = $extval(word, "0xFF")
+macdef w_0xFFF = $extval(word, "0xFFF")
 
 (* ****** ****** *)
 
@@ -71,6 +88,7 @@ fun eq_word_word(word, word): bool = "mac#%"
 fun add_word_word(word, word): word = "mac#%"
 fun sub_word_word(word, word): word = "mac#%"
 fun land_word_word(word, word): word = "mac#%"
+fun lor_word_word(word, word): word = "mac#%"
 fun lsl_word(word, int): word = "mac#%"
 fun lsr_word(word, int): word = "mac#%"
 
@@ -94,6 +112,7 @@ overload = with eq_word_word
 overload + with add_word_word
 overload - with sub_word_word
 overload land with land_word_word
+overload lor with lor_word_word
 overload lsl with lsl_word
 overload lsr with lsr_word
 
@@ -170,6 +189,11 @@ exception InvalidRegister of (byte)
 
 // A register number (0 through 15)
 typedef nreg = natLt(NUM_REGS)
+
+// Turns a byte into a reg number
+fun nreg_of_byte(byte): nreg
+
+overload b2nreg with nreg_of_byte
 
 (* ****** ****** *)
 
@@ -268,8 +292,12 @@ datatype key_event =
 
 (* ****** ****** *)
 
-// An opcode broken into parts
-abstype opcode_type = ptr
-typedef opcode = opcode_type
+// Each opcode has a unique combination of the first 4 bits and the last
+// 0-3 4-bit sections with all non-identify 4-bit sections containing additional
+// data for the instruction.
+datatype opcode =
+  | PNNN of (byte, word)
+  | PXKK of (byte, breg byte)
+  | PXYK of (byte, breg, breg, byte)
 
 (* End of [chip8-base.sats] *)

@@ -32,15 +32,13 @@ val I: wreg
 // for both words and memory indexes, which are ints bounded to the memory size.
 // The values will not be checked to make sure they're a valid memory index
 // until the getter is called and the cast does that.
-fun wreg_get_word(r: wreg): word
-fun wreg_get_imem(r: wreg): imem
+fun wreg_get(r: wreg): word
 fun wreg_set(r: wreg, w: word): void
 fun wreg_incr(r: wreg, w: word): void
 fun wreg_decr(r: wreg, w: word): void
 
 // Shorthands
-overload .get with wreg_get_word
-overload .get with wreg_get_imem
+overload .get with wreg_get
 overload .set with wreg_set
 overload .incr with wreg_incr
 overload .decr with wreg_decr
