@@ -120,7 +120,7 @@ local
       | check_pkk(b_0xF, b_0x7) => Vx(DT.get())
       | check_pkk(b_0xF, b_0xA) => wait_for_key(opc.x)
       | check_pkk(b_0xF, i2b(0x15)) => DT.set(Vx())
-      | check_pkk(b_0xF, i2b(0x18)) => ST.set(Vx())
+      | check_pkk(b_0xF, i2b(0x18)) => (ST.set(Vx()); println!("Beep!"))
       | check_pkk(b_0xF, i2b(0x1E)) => (
           Vf(w2i(I.get()) + b2i(Vx()) > 0xFFF);
           I.set(I.get() + b2w(Vx()))
