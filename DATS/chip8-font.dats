@@ -35,13 +35,10 @@ unsigned char chip8_font[80] =
 
 (* ****** ****** *)
 
-implement load_font() = loop(W_0x0) where {
-  val mem_sz = $extval(Word(MEM_SIZE), "0x1000")
-  val font_sz = $extval(Word(FONT_SZ), "0x80")
-
-  fun loop{i:word | i < FONT_SZ; i < MEM_SIZE}(i: Word(i)): void = (
+implement load_font() = loop(0) where {
+  fun loop(i: natLt(FONT_SZ)): void = (
     Mem(i, chip8_font[$UN.cast{natLt(FONT_SZ)}(i)]);
-    if (succ(i) < mem_sz) * (succ(i) < font_sz) then loop(succ(i))
+    if (succ(i) < MEM_SIZE) * (succ(i) < FONT_SZ) then loop(succ(i))
   )
 }
 

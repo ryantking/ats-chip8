@@ -9,7 +9,7 @@ staload "./chip8-base.sats"
 
 (* ****** ****** *)
 
-// Un-indexed word operations
+// Word Operations
 fun word_succ(word):<> word = "mac#%"
 fun word_pred(word):<> word = "mac#%"
 fun word_add(word, word):<> word = "mac#%"
@@ -65,54 +65,5 @@ fun print_word : print_type(word)
 fun fprint_word : fprint_type(word)
 overload print with print_word
 overload fprint with fprint_word
-
-(* ****** ****** *)
-
-// Indexed word operations
-fun Word_succ{b:word}(Word(b)):<> Word(b+1) = "mac#%"
-fun Word_pred{b:word}(Word(b)):<> Word(b-1) = "mac#%"
-fun Word_add{b1,b2:word}(Word(b1), Word(b2)):<> Word(b1+b2) = "mac#%"
-fun Word_sub{b1,b2:word}(Word(b1), Word(b2)):<> Word(b1-b2) = "mac#%"
-fun Word_mul{b1,b2:word}(Word(b1), Word(b2)):<> Word(b1*b2) = "mac#%"
-fun Word_div{b1,b2:word}(Word(b1), Word(b2)):<> Word(b1/b2) = "mac#%"
-fun Word_mod{b1,b2:word}(Word(b1), Word(b2)):<> Word(b1%b2) = "mac#%"
-fun Word_lt{b1,b2:word}(Word(b1), Word(b2)):<> bool(b1 < b2) = "mac#%"
-fun Word_lte{b1,b2:word}(Word(b1), Word(b2)):<> bool(b1 <= b2) = "mac#%"
-fun Word_gt{b1,b2:word}(Word(b1), Word(b2)):<> bool(b1 > b2) = "mac#%"
-fun Word_gte{b1,b2:word}(Word(b1), Word(b2)):<> bool(b1 >= b2) = "mac#%"
-fun Word_eq{b1,b2:word}(Word(b1), Word(b2)):<> bool(b1 == b2) = "mac#%"
-fun Word_neq{b1,b2:word}(Word(b1), Word(b2)):<> bool(b1 != b2) = "mac#%"
-fun Word_max{b1,b2:word}(Word(b1), Word(b2)):<> Word(max(b1, b2)) = "mac#%"
-fun Word_min{b1,b2:word}(Word(b1), Word(b2)):<> Word(min(b1, b2)) = "mac#%"
-fun Word_isgtz{b:word}(Word(b)):<> bool(b > 0) = "mac#%"
-fun Word_iseqz{b:word}(Word(b)):<> bool(b == 0) = "mac#%"
-fun Word_isneqz{b:word}(Word(b)):<> bool(b != 0) = "mac#%"
-
-// Overloads
-overload succ with Word_succ
-overload pred with Word_pred
-overload + with Word_add
-overload - with Word_sub
-overload * with Word_mul
-overload / with Word_div
-overload % with Word_mod
-overload < with Word_lt
-overload <= with Word_lte
-overload > with Word_gt
-overload >= with Word_gte
-overload = with Word_eq
-overload != with Word_neq
-overload max with Word_max
-overload min with Word_min
-overload isgtz with Word_isgtz
-overload iseqz with Word_iseqz
-overload isneqz with Word_isneqz
-
-fun print_Word : print_type{b:word}(Word(b))
-fun fprint_Word : fprint_type{b:word}(Word(b))
-overload print with print_Word
-overload fprint with fprint_Word
-
-(* ****** ****** *)
 
 (* End of [chip8-word-sats] *)

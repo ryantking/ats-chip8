@@ -13,17 +13,10 @@ staload "./../mydepies.hats"
 
 (* ****** ****** *)
 
-sortdef byte = {i:nat | i < 0x100}
-sortdef word = {i:nat | i < 0x10000}
-
 // Types that are stored by chip8
 abst@ype byte = uint8
-abst@ype Byte(i:int) = uint8(i)
-typedef byteLt(ub:int) = [b: byte | b < ub] Byte(b)
 
 abst@ype word = uint16
-abst@ype Word(i:int) = uint16(i)
-typedef wordLt(ub:int) = [w: word | w < ub] Word(w)
 
 (* ****** ****** *)
 
@@ -46,12 +39,8 @@ macdef b_0xE = $extval(byte, "0xE")
 macdef b_0xF = $extval(byte, "0xF")
 macdef b_0xFF = $extval(byte, "0xFF")
 
-macdef bb_0x0 = $extval(Byte(0), "0x0")
-macdef bb_0x1 = $extval(Byte(1), "0x1")
-
 // Commonly used word values
 macdef w_0x0   = $extval(word, "0x0")
-macdef W_0x0   = $extval(Word(0), "0x0")
 macdef w_0x1   = $extval(word, "0x1")
 macdef w_0x2   = $extval(word, "0x2")
 macdef w_0xF   = $extval(word, "0xF")
@@ -92,7 +81,7 @@ abstype memory_type = ptr
 typedef memory = memory_type
 
 // Index to chip8 memory
-typedef imem = wordLt(MEM_SIZE)
+typedef imem = natLt(MEM_SIZE)
 
 // Segmentation fault for invalid memory access
 exception SegFault of (int)
@@ -147,8 +136,11 @@ typedef wreg = wreg_type
 
 (* ****** ****** *)
 
-// Chip8 timer frequency and clock
+// Frequency of the clock
 #define FREQ 60
+
+// Time allocated to each frame
+#define FRAME_LEN 1000 / FREQ
 
 // Unix enoch time in seconds (with precission)
 typedef time_t = double

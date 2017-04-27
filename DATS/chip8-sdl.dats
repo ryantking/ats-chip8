@@ -134,14 +134,12 @@ local
 in
   fun load_game(info) =
     let
-      val mem_sz = $extval(Word(0x1000), "0x1000")
-      val pc_start = $extval(Word(0x200), "0x200")
       fun loop(data: stream_vt(char), n: imem): void =
         case+ !data of
         | ~stream_vt_nil() => ()
         | ~stream_vt_cons(c, rest) => (
             Mem(n, c2b(c));
-            if succ(n) < mem_sz then loop(rest, succ(n))
+            if succ(n) < MEM_SIZE then loop(rest, succ(n))
             else (stream_vt_free(rest); $raise GameTooLarge())
           )
 
@@ -149,7 +147,7 @@ in
     in
       case+ data of
         | ~None_vt() => $raise GameNotFound()
-        | ~Some_vt(data) => loop(streamize_fileref_char(data), pc_start)
+        | ~Some_vt(data) => loop(streamize_fileref_char(data), PC_START)
     end
 end
 
