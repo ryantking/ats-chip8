@@ -50,6 +50,19 @@ fun load_font(): void
 fun quit(): void
 
 // One cycle of emulation
-fun game_loop(!display): void
+fun game_loop(!display, !mixer): void
+
+(* ****** ****** *)
+
+ // Audio
+
+(* ****** ****** *)
+
+// Init and close the audio mixer
+fun init_mixer(): mixer
+fun close_mixer(mixer): void
+
+// Play a sound
+fun update_mixer(!mixer, int): void
 
 (* End of [chip8.sats] *)

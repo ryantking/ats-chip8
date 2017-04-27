@@ -50,7 +50,7 @@ local
 in
   implement init_clock() = !t_start := get_time()
 
-  implement sync_clock() = frames > 0 where {
+  implement sync_clock() = frames where {
     val t_cur = get_time()
     val t_passed = t_cur - !t_start
     val frames = g0float2int_double_int(t_passed * 60) - !frames_done

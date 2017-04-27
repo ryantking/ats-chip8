@@ -161,6 +161,9 @@ int chip8_word_isneqz(word b) { return b != 0; }
 
 /* ****** ******* */
 
+
+/* ****** ******* */
+
 #endif
 
 /* End of [chip8.cats] */

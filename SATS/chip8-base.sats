@@ -241,8 +241,10 @@ typedef opcode = opcode_type
 (* ****** ****** *)
 
 #define SAMPLE_RATE 44100
+#define NUM_CHANNELS 2
+#define AUDIO_BUFF_SIZE SAMPLE_RATE / 20
 
-absvtype audio_mixer_type = ptr
-vtypedef audio_mixer = audio_mixer_type
+absvtype mixer_type = ptr
+vtypedef mixer = mixer_type
 
 (* End of [chip8-base.sats] *)

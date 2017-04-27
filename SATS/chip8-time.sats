@@ -14,7 +14,7 @@ fun get_time(): time_t
 
 // Functions to init the clock, decrease the timers, and manage speed
 fun init_clock(): void
-fun sync_clock(): bool
+fun sync_clock(): int
 
 // Returns whether or not there's time for another instruction
 fun has_time(): bool
