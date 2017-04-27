@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+GAME="GAMES/${1}"
+CHIP8="BUILD/chip8"
+
+[[ -z "${1}" ]] && echo "Available Games:" && ls GAMES | tr ' ' '\n' && exit
+[[ ! -f "${CHIP8}" ]] && echo "Please run \"make\" before using." && exit 1
+[[ ! -f "${GAME}" ]] && echo "${GAME} not found!" && exit 1
+
+echo "Running emulator..."
+eval "${CHIP8} ${GAME}"
+echo "Done"

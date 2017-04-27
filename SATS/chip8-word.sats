@@ -113,6 +113,4 @@ fun fprint_Word : fprint_type{b:word}(Word(b))
 overload print with print_Word
 overload fprint with fprint_Word
 
-(* ****** ****** *)
-
 (* End of [chip8-word-sats] *)

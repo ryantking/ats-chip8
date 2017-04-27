@@ -113,6 +113,4 @@ fun fprint_Byte : fprint_type{b:byte}(Byte(b))
 overload print with print_Byte
 overload fprint with fprint_Byte
 
-(* ****** ****** *)
-
 (* End of [chip8-byte-sats] *)

@@ -147,8 +147,11 @@ typedef wreg = wreg_type
 
 (* ****** ****** *)
 
-// Chip8 timer frequency and clock
+// Frequency of the clock
 #define FREQ 60
+
+// Time allocated to each frame
+#define FRAME_LEN 1000 / FREQ
 
 // Unix enoch time in seconds (with precission)
 typedef time_t = double
