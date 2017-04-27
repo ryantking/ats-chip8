@@ -7,37 +7,31 @@
 PATSCC = ${PATSHOME}/bin/patscc -w
 PATSOPT = ${PATSHOME}/bin/pastopt
 
-# File Removal Command
-RM = rm -f
-
 # Includes
 INCLUDE += -DATS_MEMALLOC_LIBC
 INCLUDE += -I./../node_modules
 
-# Executable
-EXEC = chip8
-
 # Source Files
-DIR = ./..
-SATS = $(DIR)/SATS/chip8.sats
-DATS_SDL += $(DIR)/DATS/chip8-sdl.dats
+DEPS = ../SATS/chip8.sats ../DATS/chip8-sdl.dats
+OBJS = $(filter-out $(DEPS),$(wildcard ../?ATS/*.?ats ../*.hats))
 
 # Flags
 FLAGS_SDL = $(shell pkg-config sdl2 --cflags --libs)
 
 # Build the emulator, with SDL by default
 all:: SDL
+SDL:: chip8
 
 # Build the emulator with SDL
-SDL: $(SATS) $(DATS_SDL)
-	$(PATSCC) $(INCLUDE) -o $(EXEC) $^ $(FLAGS_SDL)
+chip8: $(DEPS) $(OBJS)
+	$(PATSCC) $(INCLUDE) -o $@ $(word 1,$^) $(word 2,$^) $(FLAGS_SDL)
 
 # Clean routines
-clean:: ; $(RM) *~
-clean:: ; $(RM) *_?ats.c
-clean:: ; $(RM) *_?ats.o
+clean:: ; @rm -f *~
+clean:: ; @rm -f *_?ats.c
+clean:: ; @rm -f *_?ats.o
 
 cleanall:: clean
-cleanall:: ; $(RM) chip8
+cleanall:: ; @rm -f chip8
 
 # End of [Makefile]
