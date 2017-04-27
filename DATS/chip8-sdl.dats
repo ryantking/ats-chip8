@@ -167,10 +167,9 @@ implement main0(argc, argv) = () where {
   val () = load_game(argv[1])
   val () = PC.set(i2w(PC_START))
   val () = init_clock()
-  val () = println!("W_0x0: ", W_0x0)
-  // val dpy = init_display()
-  // val () = game_loop(dpy)
-  // val () = close_display(dpy)
+  val dpy = init_display()
+  val () = game_loop(dpy)
+  val () = close_display(dpy)
 }
 
 (* End of [chip8-sdl.dats] *)
