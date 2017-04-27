@@ -234,4 +234,15 @@ exception UnknownOpcode of (word)
 abstype opcode_type = ptr
 typedef opcode = opcode_type
 
+(* ****** ****** *)
+
+// Sound
+
+(* ****** ****** *)
+
+#define SAMPLE_RATE 44100
+
+absvtype audio_mixer_type = ptr
+vtypedef audio_mixer = audio_mixer_type
+
 (* End of [chip8-base.sats] *)
