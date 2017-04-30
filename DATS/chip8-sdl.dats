@@ -230,7 +230,7 @@ end
 local
   assume game_info_type = string
 in
-  fun load_game(info) =
+  implement load_game(info) =
     let
       fun loop(data: stream_vt(char), n: imem): void =
         case+ !data of
@@ -247,27 +247,25 @@ in
         | ~None_vt() => $raise GameNotFound()
         | ~Some_vt(data) => loop(streamize_fileref_char(data), PC_START)
     end
+
+  implement main0(argc, argv) = () where {
+    val () = if argc != 2 then (
+        if argc = 1 then fprintln!(stderr_ref, "chip8: no game specified")
+        else fprintln!(stderr_ref, "chip8: Unknown arguments");
+        exit(1)
+    )
+
+    val () = assertloc(argc = 2)
+    val () = load_font()
+    val () = load_game(argv[1])
+    val () = PC.set(i2w(PC_START))
+    val () = init_clock()
+    val dpy = init_display()
+    val mxr = init_mixer()
+    val () = game_loop(dpy, mxr)
+    val () = close_display(dpy)
+    val () = close_mixer(mxr)
+  }
 end
-
-(* ****** ****** *)
-
-implement main0(argc, argv) = () where {
-  val () = if argc != 2 then (
-      if argc = 1 then fprintln!(stderr_ref, "chip8: no game specified")
-      else fprintln!(stderr_ref, "chip8: Unknown arguments");
-      exit(1)
-  )
-
-  val () = assertloc(argc = 2)
-  val () = load_font()
-  val () = load_game(argv[1])
-  val () = PC.set(i2w(PC_START))
-  val () = init_clock()
-  val dpy = init_display()
-  val mxr = init_mixer()
-  val () = game_loop(dpy, mxr)
-  val () = close_display(dpy)
-  val () = close_mixer(mxr)
-}
 
 (* End of [chip8-sdl.dats] *)
