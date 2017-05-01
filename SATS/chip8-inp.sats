@@ -9,6 +9,10 @@ staload "./chip8-base.sats"
 
 (* ****** ****** *)
 
+// Whether or not the system is waiting for a key press
+val waiting_for_key: ref(bool)
+val waiting_key_reg: ref(breg)
+
 // Clears all the keys' statuses
 fun clear_keys(): void
 
@@ -21,11 +25,5 @@ fun release_key(nkey): void
 
 // Polls for key events
 fun poll_kb(): void
-
-// Waits for a key to be pressed
-fun wait_for_key(word): void
-
-// Returns whether or not the program is awaiting a key press
-fun waiting_for_key(): bool
 
 (* End of [chip8-inp.sats] *)

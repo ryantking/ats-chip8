@@ -47,8 +47,7 @@ fun load_font(): void
 
 (* ****** ****** *)
 
-// Ends the main loop
-fun quit(): void
+val running: ref(bool)
 
 // One cycle of emulation
 fun game_loop(!display): void

@@ -59,7 +59,7 @@ in
       DT.decr(i2b(frames));
     )
     val () = !max_cons_insns := max(frames, 1) * INSNS_PER_FRAME
-    val () = if frames = 0 || waiting_for_key() then $SDL2.SDL_Delay(FRAME_LEN)
+    val () = if frames = 0 || !waiting_for_key then $SDL2.SDL_Delay(FRAME_LEN)
   }
 
   implement has_time() =
