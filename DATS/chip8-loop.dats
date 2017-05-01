@@ -159,15 +159,14 @@ local
 in
   implement quit() = !interrupted := true
 
-  implement game_loop(dpy, mxr) =
+  implement game_loop(dpy) =
     let
       val () = exec_insns()
       val () = poll_kb()
       val frames = sync_clock()
       val () = if frames > 0 then update_display(dpy)
-      val () = update_mixer(mxr, frames)
     in
-      if not !interrupted then game_loop(dpy, mxr)
+      if not !interrupted then game_loop(dpy)
     end
 end
 

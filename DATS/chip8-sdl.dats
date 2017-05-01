@@ -5,72 +5,14 @@
 //
 (* ****** ****** *)
 
-%{^
-typedef struct audio_queue_struct {
-  unsigned int seconds;
-  int first;
-  struct audio_queue_struct *next;
-} audio_queue;
-
-audio_queue *aq_head = NULL;
-audio_queue *aq_tail = NULL;
-
-void audio_callback(void* userdata, unsigned char *stream, int len) {
-  short* target = (short *) stream;
-
-  while (len > 0 && aq_head != NULL) {
-    audio_queue *data = aq_head;
-    for (; len && data->first; target += 2, len -= 4, data->first -= 1)
-      target[0] = target[1] = data->seconds * 300 * ((len & 128) - 64);
-    if (!data->first) {
-      aq_head = aq_head->next;
-      if (aq_head == NULL) aq_tail = NULL;
-    }
-  }
-}
-
-SDL_AudioSpec *init_desired() {
-  SDL_AudioSpec *desired = (SDL_AudioSpec *) malloc(sizeof(SDL_AudioSpec));
-  desired->freq = 44100;
-  desired->format = AUDIO_S16SYS;
-  desired->channels = 2;
-  desired->samples = desired->freq / 20;
-  desired->callback = audio_callback;
-
-  return desired;
-}
-
-SDL_AudioSpec *init_obtained() {
-  SDL_AudioSpec *obtained = (SDL_AudioSpec *) malloc(sizeof(SDL_AudioSpec));
-
-  return obtained;
-}
-
-void free_spec(SDL_AudioSpec *spec) { free(spec); }
-
-int get_freq(SDL_AudioSpec *spec) { return spec->freq; }
-
-void aq_enqueue(unsigned int seconds, int first) {
-  if (aq_head == NULL) {
-    aq_head = malloc(sizeof(audio_queue));
-    aq_head->seconds = seconds;
-    aq_head->first = first;
-    aq_head->next = NULL;
-    aq_tail = aq_head;
-  } else {
-    aq_tail->next = malloc(sizeof(audio_queue));
-    aq_tail->next->seconds = seconds;
-    aq_tail->next->first = first;
-    aq_tail->next->next = NULL;
-    aq_tail = aq_tail->next;
-  }
-}
-%}
-
 #include "./../mydepies.hats"
 #include "./../staloadall.hats"
 
 #define CHIP8_MAIN 1
+
+%{#
+#include <pthread.h>
+%}
 
 local #include "./chip8-base.dats" in end
 local #include "./chip8-mem.dats" in end
@@ -81,6 +23,7 @@ local #include "./chip8-stack.dats" in end
 local #include "./chip8-scr.dats" in end
 local #include "./chip8-inp.dats" in end
 local #include "./chip8-loop.dats" in end
+local #include "./chip8-snd.dats" in end
 
 (* ****** ****** *)
 
@@ -192,42 +135,6 @@ end
 (* ****** ****** *)
 
 local
-  absvtype mixer_ptr(l:addr) = ptr(l)
-  vtypedef mixer_ptr0 = [l:agez] mixer_ptr(l)
-  vtypedef mixer_ptr1 = [l:addr | l > null] mixer_ptr(l)
-  assume mixer_type = mixer_ptr1
-
-  extern fun queue_audio(uint, bool): void = "mac#aq_enqueue"
-in
-  implement init_mixer() = obtained where {
-    extern fun init_desired(): mixer = "mac#init_desired"
-    extern fun init_obtained(): mixer = "mac#init_obtained"
-    extern fun SDL_OpenAudio(mixer, !mixer): int = "mac#SDL_OpenAudio"
-
-    val desired = init_desired()
-    val obtained = init_obtained()
-    val () = if SDL_OpenAudio(desired, obtained) > 0 then
-      fprintln!(stderr_ref, "Failed to open SDL2 audio.")
-    val () = $SDL2e.SDL_PauseAudio(0)
-  }
-
-  implement close_mixer(mxr) = free_spec(mxr) where {
-    extern fun free_spec(mixer): void = "mac#free_spec"
-  }
-
-  implement update_mixer(mxr, frames) = () where {
-    extern fun get_freq(!mixer): int = "mac#get_freq"
-
-    val freq = g0i2u(get_freq(mxr))
-    val () = $SDL2e.SDL_LockAudio()
-    val () = queue_audio(freq * g0i2u(b2i(ST.get())) / i2u(60), true)
-    val () = queue_audio(freq * g0i2u(frames - b2i(ST.get())) / i2u(60), false)
-    val () = $SDL2e.SDL_UnlockAudio()
-  }
-end
-(* ****** ****** *)
-
-local
   assume game_info_type = string
 in
   implement load_game(info) =
@@ -261,10 +168,9 @@ in
     val () = PC.set(i2w(PC_START))
     val () = init_clock()
     val dpy = init_display()
-    val mxr = init_mixer()
-    val () = game_loop(dpy, mxr)
+    val tid_snd = athread_create_cloptr_exn(llam() => sound_thread())
+    val () = game_loop(dpy)
     val () = close_display(dpy)
-    val () = close_mixer(mxr)
   }
 end
 

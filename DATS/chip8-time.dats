@@ -57,7 +57,6 @@ in
     val () = if frames > 0 then (
       !frames_done := !frames_done + frames;
       DT.decr(i2b(frames));
-      ST.decr(i2b(frames));
     )
     val () = !max_cons_insns := max(frames, 1) * INSNS_PER_FRAME
     val () = if frames = 0 || waiting_for_key() then $SDL2.SDL_Delay(FRAME_LEN)

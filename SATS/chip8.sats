@@ -21,6 +21,7 @@
 #include "./chip8-stack.sats"
 #include "./chip8-scr.sats"
 #include "./chip8-inp.sats"
+#include "./chip8-snd.sats"
 
 // Loads the game from an external memory location
 fun load_game(game_info): void
@@ -50,19 +51,6 @@ fun load_font(): void
 fun quit(): void
 
 // One cycle of emulation
-fun game_loop(!display, !mixer): void
-
-(* ****** ****** *)
-
- // Audio
-
-(* ****** ****** *)
-
-// Init and close the audio mixer
-fun init_mixer(): mixer
-fun close_mixer(mixer): void
-
-// Play a sound
-fun update_mixer(!mixer, int): void
+fun game_loop(!display): void
 
 (* End of [chip8.sats] *)

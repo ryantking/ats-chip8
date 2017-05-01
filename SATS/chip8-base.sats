@@ -240,11 +240,16 @@ typedef opcode = opcode_type
 
 (* ****** ****** *)
 
-#define SAMPLE_RATE 44100
-#define NUM_CHANNELS 2
-#define AUDIO_BUFF_SIZE SAMPLE_RATE / 20
+#define WAVE_FUN sqr_wave
+#define SAMPLE_RATE 44100.0f
+#define AUDIO_BUFF_SIZE 512
+#define AUDIO_BUFF_TIME AUDIO_BUFF_SIZE * 1000 / g0float2int(SAMPLE_RATE)
 
-absvtype mixer_type = ptr
-vtypedef mixer = mixer_type
+typedef wave_fun_t = (float) -> float
+
+typedef PaData = '{left_phase = float, right_phase = float}
+
+macdef PI = $extval(float, "3.14159")
+macdef TAU = $extval(float, "6.28318")
 
 (* End of [chip8-base.sats] *)
