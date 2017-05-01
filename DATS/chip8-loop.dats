@@ -23,8 +23,6 @@ local
     nnn = word
   }
 
-  val interrupted = ref<bool>(false)
-
   fun fetch(): word = opc where {
     val b_hi = Mem(w2imem(PC.get()))
     val () = PC.incr(w_0x1)
@@ -118,7 +116,10 @@ local
       | check_pkk(b_0xE, i2b(0xA1)) =>
         if not(check_key($UN.cast{nkey}(Vx()))) then PC.incr(w_0x2)
       | check_pkk(b_0xF, b_0x7) => Vx(DT.get())
-      | check_pkk(b_0xF, b_0xA) => wait_for_key(opc.x)
+      | check_pkk(b_0xF, b_0xA) => (
+          !waiting_for_key := true;
+          !waiting_key_reg := V(opc.x)
+        )
       | check_pkk(b_0xF, i2b(0x15)) => DT.set(Vx())
       | check_pkk(b_0xF, i2b(0x18)) => ST.set(Vx())
       | check_pkk(b_0xF, i2b(0x1E)) => (
@@ -148,7 +149,7 @@ local
 
 
   fun exec_insns(): void =
-    if has_time() && not(waiting_for_key()) then
+    if has_time() && not(!waiting_for_key) then
       let
         val opc = fetch()
         val opc = decode(opc)
@@ -157,15 +158,14 @@ local
       end
 
 in
-  implement quit() = !interrupted := true
-
   implement game_loop(dpy) =
     let
       val () = exec_insns()
       val () = poll_kb()
-      val () = if sync_clock() then update_display(dpy)
+      val frames = sync_clock()
+      val () = if frames > 0 then update_display(dpy)
     in
-      if not !interrupted then game_loop(dpy)
+      if !running then game_loop(dpy)
     end
 end
 

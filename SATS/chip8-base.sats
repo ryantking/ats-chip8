@@ -12,18 +12,15 @@ staload "./../mydepies.hats"
 // Basic Types
 
 (* ****** ****** *)
-
+// Chip8 Byte
 sortdef byte = {i:nat | i < 0x100}
-sortdef word = {i:nat | i < 0x10000}
-
-// Types that are stored by chip8
 abst@ype byte = uint8
-abst@ype Byte(i:int) = uint8(i)
-typedef byteLt(ub:int) = [b: byte | b < ub] Byte(b)
+abst@ype Byte(i:int) = [i >= 0; i < 0x100] uint8(i)
 
+sortdef word = {i:nat | i < 0x10000}
 abst@ype word = uint16
-abst@ype Word(i:int) = uint16(i)
-typedef wordLt(ub:int) = [w: word | w < ub] Word(w)
+abst@ype Word(i:int) = [i >= 0; i < 0x10000] uint16(i)
+
 
 (* ****** ****** *)
 
@@ -46,12 +43,8 @@ macdef b_0xE = $extval(byte, "0xE")
 macdef b_0xF = $extval(byte, "0xF")
 macdef b_0xFF = $extval(byte, "0xFF")
 
-macdef bb_0x0 = $extval(Byte(0), "0x0")
-macdef bb_0x1 = $extval(Byte(1), "0x1")
-
 // Commonly used word values
 macdef w_0x0   = $extval(word, "0x0")
-macdef W_0x0   = $extval(Word(0), "0x0")
 macdef w_0x1   = $extval(word, "0x1")
 macdef w_0x2   = $extval(word, "0x2")
 macdef w_0xF   = $extval(word, "0xF")
@@ -92,7 +85,7 @@ abstype memory_type = ptr
 typedef memory = memory_type
 
 // Index to chip8 memory
-typedef imem = wordLt(MEM_SIZE)
+typedef imem = natLt(MEM_SIZE)
 
 // Segmentation fault for invalid memory access
 exception SegFault of (int)
@@ -244,5 +237,23 @@ exception UnknownOpcode of (word)
 // An abstraction of an opcode
 abstype opcode_type = ptr
 typedef opcode = opcode_type
+
+(* ****** ****** *)
+
+// Sound
+
+(* ****** ****** *)
+
+#define WAVE_FUN sqr_wave
+#define SAMPLE_RATE 44100.0f
+#define AUDIO_BUFF_SIZE 512
+#define AUDIO_BUFF_TIME AUDIO_BUFF_SIZE * 1000 / g0float2int(SAMPLE_RATE)
+
+typedef wave_fun_t = (float) -> float
+
+typedef PaData = '{left_phase = float, right_phase = float}
+
+macdef PI = $extval(float, "3.14159")
+macdef TAU = $extval(float, "6.28318")
 
 (* End of [chip8-base.sats] *)

@@ -87,27 +87,6 @@ int chip8_byte_isneqz(byte b) { return b != 0; }
 
 /* ****** ******* */
 
-#define chip8_Byte_succ   chip8_byte_succ
-#define chip8_Byte_pred   chip8_byte_pred
-#define chip8_Byte_add    chip8_byte_add
-#define chip8_Byte_sub    chip8_byte_sub
-#define chip8_Byte_mul    chip8_byte_mul
-#define chip8_Byte_div    chip8_byte_div
-#define chip8_Byte_mod    chip8_byte_mod
-#define chip8_Byte_lt     chip8_byte_lt
-#define chip8_Byte_lte    chip8_byte_lte
-#define chip8_Byte_gt     chip8_byte_gt
-#define chip8_Byte_gte    chip8_byte_gte
-#define chip8_Byte_eq     chip8_byte_eq
-#define chip8_Byte_neq    chip8_byte_neq
-#define chip8_Byte_max    chip8_byte_max
-#define chip8_Byte_min    chip8_byte_min
-#define chip8_Byte_isgtz  chip8_byte_isgtz
-#define chip8_Byte_iseqz  chip8_byte_iseqz
-#define chip8_Byte_isneqz chip8_byte_isneqz
-
-/* ****** ****** */
-
 ATSinline()
 word chip8_word_succ(word b) { return b+1; }
 
@@ -160,7 +139,7 @@ ATSinline()
 int chip8_word_lte(word b1, word b2) { return b1 <= b2; }
 
 ATSinline()
-int chip8_eq_word(word b1, word b2) { return b1 == b2; }
+int chip8_word_eq(word b1, word b2) { return b1 == b2; }
 
 ATSinline()
 int chip8_word_neq(word b1, word b2) { return b1 != b2; }
@@ -182,26 +161,8 @@ int chip8_word_isneqz(word b) { return b != 0; }
 
 /* ****** ******* */
 
-#define chip8_Word_succ   chip8_word_succ
-#define chip8_Word_pred   chip8_word_pred
-#define chip8_Word_add    chip8_word_add
-#define chip8_Word_sub    chip8_word_sub
-#define chip8_Word_mul    chip8_word_mul
-#define chip8_Word_div    chip8_word_div
-#define chip8_Word_mod    chip8_word_mod
-#define chip8_Word_lt     chip8_word_lt
-#define chip8_Word_lte    chip8_word_lte
-#define chip8_Word_gt     chip8_word_gt
-#define chip8_Word_gte    chip8_word_gte
-#define chip8_Word_eq     chip8_word_eq
-#define chip8_Word_neq    chip8_word_neq
-#define chip8_Word_max    chip8_word_max
-#define chip8_Word_min    chip8_word_min
-#define chip8_Word_isgtz  chip8_word_isgtz
-#define chip8_Word_iseqz  chip8_word_iseqz
-#define chip8_Word_isneqz chip8_word_isneqz
 
-/* ****** ****** */
+/* ****** ******* */
 
 #endif
 

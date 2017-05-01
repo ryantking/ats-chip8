@@ -9,7 +9,7 @@ staload "./chip8-base.sats"
 
 (* ****** ****** *)
 
-// Un-indexed word operations
+// Word Operations
 fun word_succ(word):<> word = "mac#%"
 fun word_pred(word):<> word = "mac#%"
 fun word_add(word, word):<> word = "mac#%"

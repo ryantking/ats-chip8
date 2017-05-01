@@ -21,6 +21,7 @@
 #include "./chip8-stack.sats"
 #include "./chip8-scr.sats"
 #include "./chip8-inp.sats"
+#include "./chip8-snd.sats"
 
 // Loads the game from an external memory location
 fun load_game(game_info): void
@@ -46,8 +47,7 @@ fun load_font(): void
 
 (* ****** ****** *)
 
-// Ends the main loop
-fun quit(): void
+val running: ref(bool)
 
 // One cycle of emulation
 fun game_loop(!display): void

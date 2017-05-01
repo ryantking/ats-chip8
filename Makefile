@@ -8,14 +8,11 @@ BUILD_DIR = BUILD
 NODE_DIR = node_modules
 
 # NPM Dependencies
-DEPS = atscntrb-libsdl2
-DEPS2 = $(addprefix $(NODE_DIR)/,$(DEPS))
-DEPS3 = $(addsuffix /package.json,$(DEPS))
-DEPS4 = $(addprefix /,$(DEPS3))
+DEPS = atscntrb-libsdl2 atscntrb-rk-libportaudio
 
 # Build the emulator (default)
 all:: build
-build: $(DEPS2) $(BUILD_DIR)/chip8
+build: $(addprefix $(NODE_DIR)/,$(DEPS)) $(BUILD_DIR)/chip8
 $(BUILD_DIR)/chip8:: ; @make -C $(BUILD_DIR) chip8
 
 # Install missing dependencies

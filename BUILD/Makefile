@@ -4,7 +4,7 @@
 ######
 
 # ATS Compiler
-PATSCC = ${PATSHOME}/bin/patscc -w
+PATSCC = ${PATSHOME}/bin/patscc -w -Wall -D_REENTRANT -lpthread -lportaudio
 PATSOPT = ${PATSHOME}/bin/pastopt
 
 # Includes

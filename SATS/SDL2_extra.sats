@@ -28,7 +28,7 @@ vtypedef SDL_Surface_ptr1 = $SDL2.SDL_Surface_ptr1
 (*- TYPES --------------------------------------------------------------------*)
 
 // Callback function to get more audio
-typedef SDL_AudioCallback = (ptr, uint8, int) -> void
+typedef SDL_AudioCallback = (ptr, &uint, int) -> void
 
 typedef SDL_TimerCallback = (uint, ptr) -> uint
 
@@ -45,9 +45,10 @@ typedef SDL_AudioSpec = $extype_struct"SDL_AudioSpec" of {
   freq     = int,               // DSP frequency (samples per second)
   format   = SDL_AudioFormat,   // audio data format
   channels = uint8,             // Number of separate sound channels
+  silence  = uint8,             // Audio buffer silence value
   samples  = uint16,            // Audio buffer size in samples (power of 2)
-  callback = SDL_AudioCallback, // The function to call to get more audio data
-  _rest    = undefined_t0ype    // Rest of the type (hidden to ATS)
+  size     = uint32,            // AUdio buffer size in bytes
+  callback = SDL_AudioCallback  // The function to call to get more audio data
 }
 
 (* SDL Color *)
@@ -153,7 +154,7 @@ macdef SDL_RELEASED = $extval(uchar, "SDL_RELEASED")
 (*- FUNCTIONS ----------------------------------------------------------------*)
 
 (* SDL Audio Functions *)
-fun SDL_OpenAudio(cPtr0(SDL_AudioSpec), cPtr0(SDL_AudioSpec)): int = "mac#%"
+fun SDL_OpenAudio(&SDL_AudioSpec, &SDL_AudioSpec): int = "mac#%"
 fun SDL_PauseAudio(int): void = "mac#%"
 
 fun SDL_InitSubSystem(uint): int = "mac#%"
@@ -161,5 +162,9 @@ fun SDL_InitSubSystem(uint): int = "mac#%"
 fun SDL_AddTimer(uint, SDL_TimerCallback, ptr): SDL_TimerID = "mac#%"
 
 fun SDL_FillRect(!SDL_Surface_ptr1, cPtr0(SDL_Rect), uint): int = "mac#%"
+
+fun SDL_LockAudio(): void = "mac#%"
+
+fun SDL_UnlockAudio(): void = "mac#%"
 
 (* End of [SDL_Extra.sats] *)

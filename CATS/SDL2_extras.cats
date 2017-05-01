@@ -20,6 +20,10 @@
 
 #define sdl_extra_SDL_FillRect      SDL_FillRect
 
+#define sdl_extra_SDL_LockAudio     SDL_LockAudio
+
+#define sdl_extra_SDL_UnlockAudio   SDL_UnlockAudio
+
 /* ****** ****** */
 
 SDL_Keycode sdl_extra_GetKeysym(SDL_Event event) {

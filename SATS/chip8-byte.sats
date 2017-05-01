@@ -9,7 +9,7 @@ staload "./chip8-base.sats"
 
 (* ****** ****** *)
 
-// Un-indexed byte operations
+// Byte operations
 fun byte_succ(byte):<> byte = "mac#%"
 fun byte_pred(byte):<> byte = "mac#%"
 fun byte_add(byte, byte):<> byte = "mac#%"
