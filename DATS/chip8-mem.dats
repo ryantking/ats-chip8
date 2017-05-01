@@ -20,6 +20,8 @@ local
 in
   implement memory_get_at(i) = memory[imem2index(i)]
   implement memory_set_at(i, b) = memory[imem2index(i)] := b
+
+
 end
 
 (* ****** ****** *)
